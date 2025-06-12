@@ -1,10 +1,5 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,15 +7,23 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Пользовательский блок темы, возможно, обработанный с помощью такого инструмента, как PostCSS, или системы дизайна. */
+@theme {
+  /* Определите пользовательскую переменную CSS, которая использует анимацию ключевых кадров. */
+  --animate-fade-in: fade-in-scale 0.3s ease-out;
+  
+  /* Определите ключевые кадры для анимации «fade-in-scale» (постепенное появление с масштабированием). */
+  @keyframes fade-in-scale {
+    0% {
+      /* Начало: немного меньше и полностью прозрачный */
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      /* Конец: полностью видимый и нормального размера */
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 }
