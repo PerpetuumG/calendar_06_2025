@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { SignIn } from '@clerk/nextjs';
 
-const Page = () => {
+const LoginPage = () => {
   return (
     <main className={'flex flex-col items-center p-5 gap-10 animate-fade-in'}>
       <Image src={'/assets/logo.svg'} width={100} height={100} alt={'Logo'} />
@@ -13,4 +13,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default LoginPage;
