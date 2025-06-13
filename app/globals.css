@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -40,21 +43,20 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-
-/* Пользовательский блок темы, возможно, обработанный с помощью такого инструмента, как PostCSS, или системы дизайна. */
+/* A custom theme block, possibly processed by a tool like PostCSS or a design system */
 @theme {
-  /* Определите пользовательскую переменную CSS, которая использует анимацию ключевых кадров. */
+  /* Define a custom CSS variable that uses a keyframe animation */
   --animate-fade-in: fade-in-scale 0.3s ease-out;
   
-  /* Определите ключевые кадры для анимации «fade-in-scale» (постепенное появление с масштабированием). */
+  /* Define the keyframes for the "fade-in-scale" animation */
   @keyframes fade-in-scale {
     0% {
-      /* Начало: немного меньше и полностью прозрачный */
+      /* Start: slightly smaller and fully transparent */
       opacity: 0;
       transform: scale(0.95);
     }
     100% {
-      /* Конец: полностью видимый и нормального размера */
+      /* End: fully visible and normal size */
       opacity: 1;
       transform: scale(1);
     }
@@ -128,4 +130,13 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
