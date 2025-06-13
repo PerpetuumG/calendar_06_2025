@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang='en'>
+      <html lang='ru'>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased animate-fade-in`}>
           {children}
         </body>
