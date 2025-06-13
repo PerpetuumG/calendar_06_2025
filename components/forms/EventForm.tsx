@@ -30,7 +30,7 @@ import {
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { createEvent, deleteEvent, updateEvent } from '@/server/actions/events';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 
 // Компонент для создания, редактирования и удаления событий
@@ -73,7 +73,7 @@ const EventForm = ({
 
   // Функция для обработки отправки формы
   const onSubmit = async (values: z.infer<typeof eventFormSchema>) => {
-    const action = event === null ? createEvent : updateEvent.bind(null, event.id);
+    const action = event == null ? createEvent : updateEvent.bind(null, event.id);
 
     try {
       await action(values);

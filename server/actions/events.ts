@@ -71,4 +71,33 @@ export async function updateEvent(
   }
 }
 
-export async function deleteEvent(e: any) {}
+// Эта функция удаляет существующее событие из базы данных после проверки права собственности пользователя.
+export async function deleteEvent(
+  id: string, // Идентификатор события для удаления
+): Promise<void> {
+  try {
+    // Аутентифицировать пользователя
+    const { userId } = await auth();
+
+    // Выдавать ошибку, если нет авторизованного пользователя
+    if (!userId) {
+      throw new Error('Пользователь не авторизован.');
+    }
+
+    // Попытка удалить событие только в том случае, если оно принадлежит авторизованному пользователю
+    const { rowCount } = await db
+      .delete(EventTable)
+      .where(and(eq(EventTable.id, id), eq(EventTable.clerkUserId, userId)));
+
+    // Если событие не было удалено (либо не найдено, либо не принадлежит пользователю), выдать ошибку.
+    if (rowCount === 0) {
+      throw new Error('Событие не найдено или пользователь не имеет права удалять это событие.');
+    }
+  } catch (error: any) {
+    // Если происходит какая-либо ошибка, вызывайте новую ошибку с понятным сообщением.
+    throw new Error(`Не удалось удалить событие: ${error.message || error}`);
+  } finally {
+    // Перепроверьте путь „/events“, чтобы убедиться, что страница загружает свежие данные после операции с базой данных.
+    revalidatePath('/events');
+  }
+}
