@@ -71,6 +71,20 @@ const EventForm = ({
         },
   });
 
+  // Функция для обработки отправки формы
+  const onSubmit = async (values: z.infer<typeof eventFormSchema>) => {
+    const action = event === null ? createEvent : updateEvent.bind(null, event.id);
+
+    try {
+      await action(values);
+    } catch (e: any) {
+      console.error('Ошибка при отправке формы: ', e);
+      form.setError('root', {
+        message: `Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз позже. ${e.message}`,
+      });
+    }
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='flex gap-6 flex-col'>
