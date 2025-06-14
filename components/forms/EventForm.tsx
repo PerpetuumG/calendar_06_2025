@@ -77,8 +77,9 @@ const EventForm = ({
 
     try {
       await action(values);
+      router.push('/events');
     } catch (e: any) {
-      console.error('Ошибка при отправке формы: ', e);
+      // Обработайте любую ошибку, которая возникает во время действия (например, сетевая ошибка)
       form.setError('root', {
         message: `Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз позже. ${e.message}`,
       });

@@ -1,8 +1,17 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { CalendarPlus } from 'lucide-react';
+import { auth } from '@clerk/nextjs/server';
+import { getEvents } from '@/server/actions/events';
 
-const Page = () => {
+const EventsPage = async () => {
+  // Получите идентификатор аутентифицированного пользователя
+  const { userId, redirectToSignIn } = await auth();
+  // Перенаправить на страницу входа, если пользователь не является аутентификацией
+  if (!userId) return redirectToSignIn();
+
+  const events = await getEvents(userId);
+
   return (
     <section className={'flex flex-col items-center gap-16 animate-fade-in'}>
       <div className={'flex gap-4 items-baseline'}>
@@ -28,4 +37,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default EventsPage;

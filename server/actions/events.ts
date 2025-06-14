@@ -101,3 +101,55 @@ export async function deleteEvent(
     revalidatePath('/events');
   }
 }
+
+// Вывести тип строки из схемы EventTable
+type EventRow = typeof EventTable.$inferSelect;
+
+// Асинхронная функция для получения всех событий (активных и неактивных) для конкретного пользователя
+export async function getEvents(clerkUserId: string): Promise<EventRow[]> {
+  // Запрос к базе данных о событиях, в которых clerkUserId совпадает
+  const events = await db.query.EventTable.findMany({
+    //where: — Это определяет фильтр (условие WHERE) для вашего запроса.
+
+    // clerkUserId — это переменная (вероятно, переданная ранее в запрос).
+
+    // userIdCol — это ссылка на столбец в вашей базе данных (вы просто переименовываете clerkUserId в userIdCol для ясности).
+    where: ({ clerkUserId: userIdCol }, { eq }) => eq(userIdCol, clerkUserId),
+
+    // События упорядочены по алфавиту (без учета регистра) по названию
+    orderBy: ({ name }, { asc, sql }) => asc(sql`lower(${name})`),
+  });
+
+  // Вернуть полный список событий
+  return events;
+}
+
+// Получить конкретное событие для заданного пользователя
+export async function getEvent(userId: string, eventId: string): Promise<EventRow | undefined> {
+  const event = await db.query.EventTable.findFirst({
+    where: ({ id, clerkUserId }, { and, eq }) => and(eq(clerkUserId, userId), eq(id, eventId)), //Создать новый временный файл из выделенного фрагмента
+  });
+
+  return event ?? undefined; // Явно возвращает undefined, если не найдено
+}
+
+// Определить новый тип для публичных событий, которые всегда активны.
+// Удаляет общее поле «isActive» и заменяет его литералом true.
+export type PublicEvent = Omit<EventRow, 'isActive'> & { isActive: true };
+// «Эта версия события гарантированно активна — без «возможно» и «ложно».
+
+// Асинхронная функция для получения всех активных (публичных) событий для конкретного пользователя
+export async function getPublicEvents(clerkUserId: string): Promise<PublicEvent[]> {
+  // Запрос к базе данных о событиях, в которых:
+  // - clerkUserId совпадает
+  // - событие помечено как активное
+  // События упорядочены по алфавиту (без учета регистра) по имени
+  const events = await db.query.EventTable.findMany({
+    where: ({ clerkUserId: userIdCol, isActive }, { eq, and }) =>
+      and(eq(userIdCol, clerkUserId), eq(isActive, true)),
+    orderBy: ({ name }, { asc, sql }) => asc(sql`lower(${name})`),
+  });
+
+  // Преобразуйте результат в тип PublicEvent[] , чтобы указать, что все события активны.
+  return events as PublicEvent[];
+}
