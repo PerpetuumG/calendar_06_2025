@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { CalendarPlus } from 'lucide-react';
 import { auth } from '@clerk/nextjs/server';
 import { getEvents } from '@/server/actions/events';
+import EventCard from '@/components/cards/EventCard';
 
 const EventsPage = async () => {
   // Получите идентификатор аутентифицированного пользователя
@@ -33,6 +34,27 @@ const EventsPage = async () => {
           </Link>
         </Button>
       </div>
+
+      {/* Показать карты событий, если таковые имеются, иначе покажите пустое состояние */}
+      {events.length > 0 ? (
+        <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 p-10'>
+          {events.map((event) => (
+            <EventCard key={event.id} {...event} />
+          ))}
+        </div>
+      ) : (
+        <div className='flex flex-col items-center gap-4'>
+          {/*<CalendarRange className='size-16 mx-auto text-black' />У вас еще нет событий. Создайте свое первое мероприятие, чтобы начать!*/}
+          <Button
+            className='bg-blue-500 hover:bg-blue-400 text-white py-6 hover:scale-110 duration-500 border-b-4 border-blue-700 hover:border-blue-500 rounded-2xl shadow-accent-foreground shadow-2xl text-2xl font-black'
+            asChild
+          >
+            <Link href='/events/new'>
+              <CalendarPlus className='mr-4 size-7' /> Новое событие
+            </Link>
+          </Button>
+        </div>
+      )}
     </section>
   );
 };
