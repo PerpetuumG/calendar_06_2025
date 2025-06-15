@@ -9,6 +9,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { formatEventDescription } from '@/lib/formatters';
 
 type EventCardProps = {
   id: string;
